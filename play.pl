@@ -19,26 +19,24 @@ move([X,Y],[X,NY],U,right):-
 unsave(X):-
     bomb(X).
 
-getStars(X):-
-    star(X).
-
-starcheckker(CurrentLocation,L):-
+starcheckker(CurrentLocation,Value):-
     star(CurrentLocation),
-    L is 1;
+    Value is 1;
     \+star(CurrentLocation),
-    L is 0.
+    Value is 0.
 
 game(Moves,Stars):-
-    start(J),
-    path(J,[J],0,Stars,[],Moves).
+    start(StartLocation),
+    path(StartLocation,[StartLocation],0,Stars,Moves,[]).
 
 path(End,_,Q,Q,W,W):-
     end(End).
 
-path(X,Visited,Counter,ResultStars,List,Cap):-
-    move(X,Nextmove,_,Direction),
+path(CurrentLocation,Visited,Counter,ResultStars,[Direction|List],[]):-
+    move(CurrentLocation,Nextmove,_,Direction),
     starcheckker(Nextmove,NCounter),
     Counter2 is Counter+ NCounter,
     \+unsave(Nextmove),
     \+ member(Nextmove,Visited),
-    path(Nextmove,[Nextmove|Visited],Counter2,ResultStars,[Direction|List],Cap).
+    path(Nextmove,[Nextmove|Visited],Counter2,ResultStars,List,[]).
+
